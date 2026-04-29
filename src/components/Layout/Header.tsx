@@ -5,7 +5,9 @@ import { useInventoryStore } from '../../store/useInventoryStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useNotificationStore } from '../../store/useNotificationStore';
 import { useSalesStore } from '../../store/useSalesStore';
-import { Bell, User, AlertCircle, AlertTriangle, Lock, Search, Check, Sparkles } from 'lucide-react';
+import { Bell, User, AlertCircle, AlertTriangle, Lock, Search, Check, Sparkles, Timer } from 'lucide-react';
+import { useTrialTimer } from '../../hooks/useTrialTimer';
+
 
 const pageTitles: Record<string, string> = {
   dashboard:     'لوحة التحكم',
@@ -80,10 +82,33 @@ export const Header: React.FC = () => {
     return null;
   }).filter(Boolean) as { name: string; msg: string; type: string }[];
 
+  const { formattedTime, progress } = useTrialTimer();
+
   return (
     <header className={`header ${!sidebarOpen ? 'sidebar-collapsed' : ''}`}>
       {/* Title */}
       <div className="header-title">{pageTitles[activePage] || ''}</div>
+
+      {/* Trial Countdown */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        background: 'var(--accent-light)',
+        padding: '6px 14px',
+        borderRadius: '50px',
+        border: '1px solid var(--accent)',
+        marginRight: 'auto',
+        marginLeft: '20px'
+      }}>
+        <span style={{ 
+          fontSize: '13px', 
+          fontWeight: 700, 
+          color: progress < 20 ? 'var(--danger)' : 'var(--accent-dark)',
+          fontFamily: 'monospace'
+        }}>
+          {formattedTime}
+        </span>
+      </div>
 
       {/* User Profile + Actions (Far Right) */}
       <div className="header-actions">

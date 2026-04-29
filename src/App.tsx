@@ -26,6 +26,9 @@ import { Unauthorized } from './components/shared/Unauthorized';
 import { LockScreen } from './components/shared/LockScreen';
 import { useInactivityLock } from './hooks/useInactivityLock';
 import { initObservability } from './domain/observability';
+import { useTrialTimer } from './hooks/useTrialTimer';
+import { TrialExpired } from './components/shared/TrialExpired';
+
 
 function BootstrappedApp({ onboardingDone, setOnboardingDone }: { onboardingDone: boolean, setOnboardingDone: (v: boolean) => void }) {
   const { activePage } = useAppStore();
@@ -74,6 +77,7 @@ function BootstrappedApp({ onboardingDone, setOnboardingDone }: { onboardingDone
 
 function App() {
   const { isBooting, init } = useAppStore();
+  const { isExpired } = useTrialTimer();
   const [onboardingDone, setOnboardingDone] = useState(
     () => localStorage.getItem('pharma_onboarding_done') === '1'
   );
@@ -109,7 +113,13 @@ function App() {
     );
   }
 
+
+  if (isExpired) {
+    return <TrialExpired />;
+  }
+
   return <BootstrappedApp onboardingDone={onboardingDone} setOnboardingDone={setOnboardingDone} />;
+
 }
 
 export default App;
